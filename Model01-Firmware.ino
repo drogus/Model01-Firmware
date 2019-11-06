@@ -16,6 +16,8 @@
 // The Kaleidoscope core
 #include "Kaleidoscope.h"
 
+#include "Kaleidoscope-SpaceCadet.h"
+
 // Support for storing the keymap in EEPROM
 #include "Kaleidoscope-EEPROM-Settings.h"
 #include "Kaleidoscope-EEPROM-Keymap.h"
@@ -518,7 +520,9 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // comfortable - or able - to do automatically, but can be useful
   // nevertheless. Such as toggling the key report protocol between Boot (used
   // by BIOSes) and Report (NKRO).
-  USBQuirks
+  USBQuirks,
+
+  SpaceCadet
 );
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
@@ -565,6 +569,24 @@ void setup() {
   // maps for. To make things simple, we set it to five layers, which is how
   // many editable layers we have (see above).
   ColormapEffect.max_layers(5);
+
+    //Set the keymap with a 250ms timeout per-key
+  //Setting is {KeyThatWasPressed, AlternativeKeyToSend, TimeoutInMS}
+  //Note: must end with the SPACECADET_MAP_END delimiter
+  static kaleidoscope::plugin::SpaceCadet::KeyBinding spacecadetmap[] = {
+    {Key_LeftShift, Key_LeftParen, 250}
+    , {Key_RightShift, Key_RightParen, 250}
+    , {Key_LeftGui, Key_LeftCurlyBracket, 250}
+    , {Key_RightAlt, Key_RightCurlyBracket, 250}
+    , {Key_LeftAlt, Key_RightCurlyBracket, 250}
+    , {Key_LeftControl, Key_Escape, 250}
+    , {Key_RightControl, Key_Escape, 250}
+    //, {R3C6, Key_Escape, 250}
+    //, {R3C9, Key_Escape, 250}
+    , SPACECADET_MAP_END
+  };
+  //Set the map.
+  SpaceCadet.map = spacecadetmap;
 }
 
 /** loop is the second of the standard Arduino sketch functions.
